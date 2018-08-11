@@ -1,51 +1,124 @@
-## Path Planning
+## Semantic Segmentation
 ---
 
-**Path Planning for a Simulated Vehicle**
+**Classification of Image pixels into *Road* and *Non-Road***
 
 The goals / steps of this project are the following:
 
-* Implement a path planning algorithm that allows an autonomous vehicle to safely navigate highway traffic in a simulator.  The planned path must ensure that no collision occurs with other vehicles, and that the ego vehicle obeys constraints on speed, acceleration, and jerk. 
+* Implement a fully convolutional network to classify pixels in images of traffic scenes from the Kitti Road dataset as either "road surface" or "not road surface".  
+* The network is a fully-convolutional encoder-decoder network in which the encoder is the previously trained VGG network. 
 
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-### 1. Compilation###
+## Rubric Points
+### 1. Build the Neural Network###
 
-**The code compiles corectly.**
+**Does the project load the pretrained vgg model?**
 
-- Done.  See compile instructions in the [README.md](README.md) file.
+- Done.  The function `load_vgg` is implemented correctly.
 
-### 2. Valid Trajectories
+**Does the project learn the correct features from the images?**
 
-**The car is able to drive at least 4.32 miles without incident**
+* Done. The function `layers` is implemented correctly.
 
-**The car drives according to the speed limit**
+**Does the project optimize the neural network?**
 
-**Maximum acceleration and jerk are  not exceeded**
+- Done. The function `optimize` is implemented correctly.
 
-**Car does not have collisions**
+**Does the project train the neural network?**
 
-**The car stays in its lane, except for the time between changing lanes**
+- Done.The function `train_nn` is implemented correctly. The loss of the network is printed while the network is training.
 
-**The car is able to change lanes**
+### 2. Neural Network Training
 
-- Done.  Please refer to the screenshot below.  At the time of the screenshot, the car had completed 23.45 miles in a time of 31 minutes and 13 seconds with no collisions or constraint violations.  This equates to an average speed of 45.1 miles per hour.
+**Does the project train the model correctly?**
 
-![Path PLanning](./score.png)
+* Done.  On average, the model decreases loss over time:
 
-### 3. Reflection ###
+  * EPOCH 0
+    Loss: = 57.181
+    Loss: = 154.787
+    Loss: = 23.549
+    Loss: = 29.841
+    Loss: = 13.137
+    Loss: = 8.094
+    Loss: = 5.729
+    Loss: = 3.913
+    Loss: = 2.815
+    Loss: = 2.264
+    Loss: = 1.762
+    Loss: = 1.699
+    Loss: = 1.388
+    Loss: = 0.997
+    Loss: = 0.954
+    Loss: = 1.022
+    Loss: = 0.993
+    Loss: = 0.974
+    Loss: = 0.883
 
-**There is a reflection on how to generate paths**
+    ......
 
-The path planning algorithm I developed is simple --- there was no need to implement an A* path planning algorithm, for example.
+  * EPOCH 20
+    Loss: = 0.323
+    Loss: = 0.376
+    Loss: = 0.298
+    Loss: = 0.270
+    Loss: = 0.278
+    Loss: = 0.285
+    Loss: = 0.289
+    Loss: = 0.254
+    Loss: = 0.272
+    Loss: = 0.245
+    Loss: = 0.253
+    Loss: = 0.238
+    Loss: = 0.225
+    Loss: = 0.210
+    Loss: = 0.221
+    Loss: = 0.207
+    Loss: = 0.215
+    Loss: = 0.235
+    Loss: = 0.135
 
-I found the following steps helpful for developing the algorithm:
+    .......
 
-1. **Spline Trajectories:**  Use lane coordinates to ensure that the car can accelerate and drive in its original lane (without concern for other vehicles), while obeying constraints on speed, acceleration, and jerk.  The proposed trajectory is generated using splines to ensure that dynamic constraints are never violated.  The spline path planner can easily be modified to generate trajectories to adjacent lanes.
-2. **Car Following:**  Use a "car following" formula to ensure that the vehicle can safely decelerate for slower cars ahead in the same lane.  At this point, the car can safely drive around the track in the center lane, but is not able to safely maneuver to overtake any cars in front of it.
-3.  **Lane Scoring:**  Build a lane scoring function that scores each lane, and prioritizes lanes.  Lane score is determined by "exit velocity", which is the current speed of the first blockage ahead in the lane.  If the lane is empty,  then the exit velocity is infinite.  At this point, the ego vehicle is able to determine which lane it would like to be in to improve average velocity around the track.
-4. **Collision Checker:**  Build a safety checker to see if it is safe to change lanes.  To ensure that no collisions occur, the (future) lane coordinates of all other vehicles must be examined.
-5. **Finite State Machine:**  Build a simple finite state machine in which the state is simply the ID of the currently desired lane.  At each timestep, if the car is currently in the desired lane, then each lane is examined in order of priority to determine if it is safe to move to a lane of higher priority.  Then, this higher scoring lane becomes the new desired lane.  The final step is to plan a path toward the desired lane --- if the current lane is the desired lane, then the proposed path will be directly forward in the lane.  
-   One additional line of logic allows the car to move safely toward a faster lane, even if the desired faster lane is not immediately adjacent.
+  * EPOCH 39
+    Loss: = 0.087
+    Loss: = 0.078
+    Loss: = 0.088
+    Loss: = 0.105
+    Loss: = 0.090
+    Loss: = 0.092
+    Loss: = 0.079
+    Loss: = 0.114
+    Loss: = 0.093
+    Loss: = 0.094
+    Loss: = 0.097
+    Loss: = 0.106
+    Loss: = 0.084
+    Loss: = 0.088
+    Loss: = 0.086
+    Loss: = 0.088
+    Loss: = 0.090
+    Loss: = 0.094
+    Loss: = 0.108
 
-Putting these parts together provides a path planning algorithm.  The path planning algorithm ensures speed, acceleration, and jerk constraints are satisfied by construction.  Lane changes are only inititated if it is safe to do so and no collisions will occur.
+**Does the project use reasonable hyperparameters?**
+
+* Done.  The number of epoch and batch size are set to a reasonable number.
+  * Number of epochs: 40
+  * Batch size: 16
+
+**Does the project correctly label the road?**
+
+* Done.  The project labels most pixels of roads close to the best solution.
+
+* See sample inference images in the [inference_images](./inference_images) directory:
+
+  ![inference 0](./inference_images//um_000005.png)
+
+  ![inference 0](./inference_images//um_000017.png)
+
+  ![inference 0](./inference_images//um_000033.png)
+
+  ![inference 0](./inference_images//um_000037.png)
+
+![inference 1](./inference_images/um_000085.png)
 
