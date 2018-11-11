@@ -9,7 +9,7 @@ The goals / steps of this project are the following:
 * The network is a fully-convolutional encoder-decoder network in which the encoder is the previously trained VGG network. 
 
 ## Rubric Points
-### 1. Build the Neural Network###
+### 1. Build the Neural Network
 
 **Does the project load the pretrained vgg model?**
 
@@ -112,13 +112,13 @@ The goals / steps of this project are the following:
 
 * See sample inference images in the [inference_images](./inference_images) directory:
 
-  ![inference 0](./inference_images//um_000005.png)
+  - 
 
-  ![inference 0](./inference_images//um_000017.png)
+    ![inference 0](/home/philip/sdc/P12-semanticsegmentation/inference_images/um_000017.png)
 
-  ![inference 0](./inference_images//um_000033.png)
+    ![inference 0](/home/philip/sdc/P12-semanticsegmentation/inference_images/um_000033.png)
 
-  ![inference 0](./inference_images//um_000037.png)
+    ![inference 0](/home/philip/sdc/P12-semanticsegmentation/inference_images/um_000037.png)
 
-![inference 1](./inference_images/um_000085.png)
+  ![inference 1](/home/philip/sdc/P12-semanticsegmentation/inference_images/um_000085.png)
 
